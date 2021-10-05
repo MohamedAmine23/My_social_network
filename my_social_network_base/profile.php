@@ -1,7 +1,7 @@
 <?php
     require_once "functions.php";
     if(isset($_GET["pseudo"])){
-        $pseudo=$_GET["pseudo"];
+        $pseudo=sanitize($_GET["pseudo"]) ;
     }
     else{
         die("La page s'attend à recevoir un parametre 'pseudo' via la methode GET");

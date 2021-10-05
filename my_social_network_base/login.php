@@ -1,3 +1,35 @@
+<?php
+    require_once "functions.php";
+    $error='';
+    if(isset($_POST['pseudo'])&&isset($_POST['password'])){
+        $pseudo=sanitize($_POST['pseudo']);
+        $password=sanitize($_POST['password']);
+
+    
+    try{
+        $query=$pdo->prepare("SELECT pseudo , password FROM members WHERE pseudo=:pseudo");
+        $query->execute(array("pseudo"=> $pseudo));
+        $user=$query->fetch();
+        if($user===false){
+            $user='';
+        }
+       
+    }catch(Exception $exc){
+        die('ERREURS LORS DE L ACCES A LA BASE DE DONNEES');
+    }
+    if($pseudo==$user['pseudo']){
+        if($password==$user['password']){
+            redirect("profile.php?pseudo=$pseudo");
+        }
+        else{
+            $error="Mauvais mot de passe, veuillez réessayer";
+        }
+    }
+    else{
+        $error="le pseudo \'$pseudo \' n\'existe pas. Inscrivez vous!";
+    }
+    }
+?>
 <!DOCTYPE html>
 <html>
     <head>
@@ -17,15 +49,20 @@
                 <table>
                     <tr>
                         <td>Pseudo:</td>
-                        <td><input id="pseudo" name="pseudo" type="text" value=""></td>
+                        <td><input id="pseudo" name="pseudo" type="text" value="<?=$pseudo ?>"></td>
                     </tr>
                     <tr>
                         <td>Password:</td>
-                        <td><input id="password" name="password" type="password" value=""></td>
+                        <td><input id="password" name="password" type="password" value="<?=$password?>"></td>
                     </tr>
                 </table>
                 <input type="submit" value="Log In">
             </form>
         </div>
+        <?php 
+            if(isset($error)){
+                echo "<div class='errors'><br><br>$error</div>";
+            }
+        ?>
     </body>
 </html>
