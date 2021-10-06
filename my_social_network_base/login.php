@@ -1,33 +1,32 @@
 <?php
     require_once "functions.php";
-    $error='';
+   
+    $pseudo='';
+    $password='';
     if(isset($_POST['pseudo'])&&isset($_POST['password'])){
         $pseudo=sanitize($_POST['pseudo']);
         $password=sanitize($_POST['password']);
 
     
     try{
-        $query=$pdo->prepare("SELECT pseudo , password FROM members WHERE pseudo=:pseudo");
+        $query=$pdo->prepare("SELECT password FROM members WHERE pseudo=:pseudo");
         $query->execute(array("pseudo"=> $pseudo));
         $user=$query->fetch();
-        if($user===false){
-            $user='';
+        if($query->rowCount()!=0){
+            if($password==$user['password']){
+                redirect("profile.php?pseudo=$pseudo");
+            }
+            else{
+                $error="Mauvais mot de passe, veuillez réessayer";
+            }
         }
-       
+        else{
+            $error="le pseudo \'$pseudo \' n\'existe pas. Inscrivez vous!";
+        }
     }catch(Exception $exc){
         die('ERREURS LORS DE L ACCES A LA BASE DE DONNEES');
     }
-    if($pseudo==$user['pseudo']){
-        if($password==$user['password']){
-            redirect("profile.php?pseudo=$pseudo");
-        }
-        else{
-            $error="Mauvais mot de passe, veuillez réessayer";
-        }
-    }
-    else{
-        $error="le pseudo \'$pseudo \' n\'existe pas. Inscrivez vous!";
-    }
+    
     }
 ?>
 <!DOCTYPE html>
