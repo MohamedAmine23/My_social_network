@@ -5,42 +5,49 @@ $password='';
 $password_confirm='';
 if(isset($_POST["pseudo"])||isset($_POST['password'])||isset($_POST['password_confirm'])) {
     
-
-    
-    $pseudo=trim(sanitize(($_POST["pseudo"])));
-    $password=(sanitize($_POST["password"]));
-    $password_confirm=(sanitize($_POST["password_confirm"]));
+    $pseudo=sanitize($_POST["pseudo"]);
+    $password=sanitize($_POST["password"]);
+    $password_confirm = sanitize($_POST["password_confirm"]);
 
     try{
         $query=$pdo->prepare("SELECT pseudo FROM members WHERE pseudo=:pseudo");
         $query->execute(array("pseudo"=>$pseudo));
         $row=$query->fetch();
-        if($query->rowCount()==0){
-            if(strlen($pseudo>=3)){
-                
-                
-                if($password==$password_confirm){
-                    $insert=$pdo->prepare("INSERT INTO members(pseudo,password) VALUES (:pseudo,:password");
-                }else{
-                    $error="les deux de mots de passe entrés doivent être identiques";
-                }
-            
-            }else{
-                $error="la taille du nom d'utilisateur est minimum 3 caractères";
-            }
-            
-        }else {
-            $error="le nom d'utilisateur existe déja";
-        }
+        if($query->rowCount()!=0)
+            $errors[]="le nom d'utilisateur existe déja";
+     
+            //precedement:       
+        //tout se trouvait dans un seul try catch 
+        // la notion  "d'erreurs multiple"
+        // redirection et de connexion direct a la session 
+        //query execute pour le insert
+       
+        
     }catch(Exception $exc){
         $error="ERREUR LORS DE L ACCES A LA BASE DE DONNEES";
     }
-    
+    if(trim($pseudo)=='')
+        $errors[]="Le pseudo est obligatoire";
+    if(strlen($pseudo)<3)
+    $errors[]="la taille du nom d'utilisateur est minimum 3 caractères";
+    if($password!=$password_confirm)
+        $errors[]="les deux de mots de passe entrés doivent être identiques";
+    if(!isset($errors)){
+        try{
+            $query=$pdo->prepare("INSERT INTO Members(pseudo,password) VALUES(:pseudo,:password) ");
+            $query->execute(array("pseudo"=>$pseudo,"password"=>$password));
+            $_SESSION["user"]=$pseudo;
+            redirect("profile.php");
+        }catch(Exception $exc){
+            die("Probleme lors de l'acces a la base de données");
+        }
+    }
 
 }
 
 
 ?>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -76,8 +83,12 @@ if(isset($_POST["pseudo"])||isset($_POST['password'])||isset($_POST['password_co
             </form>
         </div>
         <?php 
-            if(isset($error)){
-                echo "<div class='errors'><br><br>$error</div>";
+            if(isset($errors)){
+                echo "<div class='errors'><br><br><p>veuillez corriger les erreurs suivantes :</p><ul>";
+                foreach($errors as $error){
+                    echo "<li>$error</li>";
+                }
+                echo "</ul></div>";
             }
         ?>
     </body>
