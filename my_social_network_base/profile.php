@@ -1,10 +1,11 @@
 <?php
     require_once "functions.php";
+    check_login();
     if(isset($_GET["pseudo"])){
         $pseudo=sanitize($_GET["pseudo"]) ;
     }
     else{
-        die("La page s'attend à recevoir un parametre 'pseudo' via la methode GET");
+        $pseudo=$user;
     }
     try{
        
@@ -42,13 +43,8 @@
             <a href="logout.php">Log Out</a>
         </div>
         <div class="main">
-            <?php
-                var_dump($profile);
-                echo'<br><br>';
-                var_dump($description);
-                echo'<br><br>';
-                var_dump($picture_path);
-                echo'<br><br>';
+            <?php        
+    
                 if(strlen($description)==0 ){
                     echo"No profile entered yet ! ";
                 }else{

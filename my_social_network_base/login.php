@@ -14,6 +14,7 @@
         $user=$query->fetch();
         if($query->rowCount()!=0){
             if($password==$user['password']){
+                $_SESSION['user']=$pseudo;
                 redirect("profile.php?pseudo=$pseudo");
             }
             else{
@@ -21,10 +22,10 @@
             }
         }
         else{
-            $error="le pseudo \'$pseudo \' n\'existe pas. Inscrivez vous!";
+            $error="le pseudo '$pseudo ' n'existe pas. Inscrivez vous!";
         }
     }catch(Exception $exc){
-        die('ERREURS LORS DE L ACCES A LA BASE DE DONNEES');
+        $error='ERREURS LORS DE L ACCES A LA BASE DE DONNEES';
     }
     
     }
