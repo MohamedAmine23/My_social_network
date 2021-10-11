@@ -2,6 +2,45 @@
     require_once "functions.php";
     check_login();
     
+    if(isset($_FILES['image']['name'])&&$_FILES['image']['name']!=''){
+        if($_FILES['image']['error']==0){
+            $typeOK=TRUE;
+            if($_FILES['image']['type']=="image/gif"){
+                $saveTo=$user.".gif";
+
+            }
+            else if ($_FILES['image']['type']=="image/gif"){
+                $saveTo=$user.".gif";
+            }
+            else if($_FILES['image']['type']=="image/jpeg"){
+                $saveTo=$user.".jpeg";
+            }
+            else if($_FILES['image']['type']=="image/png"){
+                $saveTo=$user.".jpeg";
+            }
+            else{
+                $typeOK=False;
+                $error="mauvais type d'image :jpeg, png ou gif !";
+            }
+            if($typeOK){
+                move_uploaded_file($_FILES['image']['tmp_name'],$saveTo);
+                try{
+                    $query=$pdo->prepare("UPDATE Members SET picture_path=:path WHERE pseudo=:pseudo");
+                    $query->execute(array("path"=>$saveTo,"pseudo"=>$user));
+                    $succes="Votre profil à été correctement mis a jour";
+                    $picture_path=$saveTo;
+
+                }catch(Exception $exc){
+                    die("Problème avec la base de données");
+                    
+                }
+            }
+        }else{
+            $error="Probleme lors du chargement de l'image";
+            
+        }
+
+    }
     try{
        
         if(isset($_POST['profile'])){
@@ -51,10 +90,12 @@
             <?php if(isset($succes)){?>
                 <span class="success"><?=$succes?></span>
             <?php }?>
+            <?php if(isset($error)){?>
+                <span class="error"><?=$error?></span>
+            <?php } ?>
                 
             
         </div>
 
     </body>
 </html>
-

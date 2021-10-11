@@ -35,7 +35,7 @@ if(isset($_POST["pseudo"])||isset($_POST['password'])||isset($_POST['password_co
     if(!isset($errors)){
         try{
             $query=$pdo->prepare("INSERT INTO Members(pseudo,password) VALUES(:pseudo,:password) ");
-            $query->execute(array("pseudo"=>$pseudo,"password"=>$password));
+            $query->execute(array("pseudo"=>$pseudo,"password"=>my_hash($password) ));
             $_SESSION["user"]=$pseudo;
             redirect("profile.php");
         }catch(Exception $exc){

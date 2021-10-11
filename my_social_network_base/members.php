@@ -1,6 +1,8 @@
 <?php
     require_once "functions.php";
+    
     check_login();
+    
     try{
        
         $query=$pdo->prepare("SELECT pseudo FROM Members");

@@ -1,9 +1,11 @@
 <?php
-session_start();
+
 $dbhost="localhost";
 $dbname="my_social_network_base";
 $dbuser="root";
 $dbpassword="root";
+
+session_start();
 
 try{
     $pdo= new PDO("mysql:host=$dbhost;dbname=$dbname;charset=utf8",$dbuser,$dbpassword);
@@ -32,4 +34,13 @@ function check_login(){
         $user=$_SESSION['user'];
         
 
+}
+function my_hash($password){
+    $prefixe_salt="VJemLnU3";
+    $suffixe_salt="QUaLtRs7";
+    return md5($prefixe_salt.$password.$suffixe_salt);
+
+}
+function check_password($password,$hash){
+    return my_hash($password)==$hash;
 }
