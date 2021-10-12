@@ -1,7 +1,7 @@
 <?php
     require_once "functions.php";
     check_login();
-    
+    $pdo=connect();
     if(isset($_FILES['image']['name'])&&$_FILES['image']['name']!=''){
         if($_FILES['image']['error']==0){
             $typeOK=TRUE;
@@ -31,7 +31,7 @@
                     $picture_path=$saveTo;
 
                 }catch(Exception $exc){
-                    die("Problème avec la base de données");
+                    abort("Problème avec la base de données");
                     
                 }
             }
@@ -55,7 +55,7 @@
         
     }
     catch(Exception $exc){
-        die("Erreur lors de l'acces à la base de données.");
+        abort("Erreur lors de l'acces à la base de données.");
     }
 
 ?>
@@ -69,14 +69,7 @@
     </head>
     <body>
         <div class="title">Update Your Profile</div>
-        <div class="menu">
-            <a href="profile.php">Home</a>
-            <a href="members.php">Members</a>
-            <a href="friends.php">Friends</a>
-            <a href="messages.php">Messages</a>
-            <a href="edit_profile.php">Edit Profile</a>
-            <a href="logout.php">Log Out</a>
-        </div>
+        <?php include 'menu.html' ?>
         <div class="main">
             <form method='post' action='edit_profile.php' enctype='multipart/form-data'>
                 <p>Enter or edit your details and/or upload an image.</p>

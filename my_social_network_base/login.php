@@ -3,6 +3,7 @@
    
     $pseudo='';
     $password='';
+    $pdo=connect();
     if(isset($_POST['pseudo'])&&isset($_POST['password'])){
         $pseudo=sanitize($_POST['pseudo']);
         $password=sanitize($_POST['password']);
@@ -13,7 +14,7 @@
         $query->execute(array("pseudo"=> $pseudo));
         $user=$query->fetch();
         if($query->rowCount()!=0){
-            if($password==$user['password']){
+            if(check_password($password,$user['password'])){
                 $_SESSION['user']=$pseudo;
                 redirect("profile.php?pseudo=$pseudo");
             }

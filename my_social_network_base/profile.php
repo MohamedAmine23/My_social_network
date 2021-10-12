@@ -1,6 +1,7 @@
 <?php
     require_once "functions.php";
     check_login();
+    $pdo=connect();
     if(isset($_GET["pseudo"])){
         $pseudo=sanitize($_GET["pseudo"]) ;
     }
@@ -15,10 +16,10 @@
         
     }
     catch(Exception $exc){
-        die("Erreur lors de l'acces à la base de données.");
+        abort("Erreur lors de l'acces à la base de données.");
     }
     if($query->rowCount()==0){
-        die("l'utilisateur n'existe pas ");
+        abort("l'utilisateur n'existe pas ");
     }else{
         $description=$profile["profile"];
         $picture_path=$profile["picture_path"];
@@ -34,14 +35,7 @@
     </head>
     <body>
         <div class="title"><?=$pseudo ?>'s Profile!</div>
-        <div class="menu">
-            <a href="profile.php">Home</a>
-            <a href="members.php">Members</a>
-            <a href="friends.php">Friends</a>
-            <a href="messages.php">Messages</a>
-            <a href="edit_profile.php">Edit Profile</a>
-            <a href="logout.php">Log Out</a>
-        </div>
+        <?php include 'menu.html' ?>
         <div class="main">
             <?php        
     

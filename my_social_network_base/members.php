@@ -1,8 +1,9 @@
 <?php
     require_once "functions.php";
     
+    $pdo=connect();
     check_login();
-    
+
     try{
        
         $query=$pdo->prepare("SELECT pseudo FROM Members");
@@ -11,7 +12,7 @@
         var_dump($members);
     }
     catch(Exception $exc){
-        die('Error while accessing the database. please contact your administrator.');
+        abort('Error while accessing the database. please contact your administrator.');
     }
     
 ?>
@@ -29,14 +30,7 @@
     <body>
         
         <div class="title">Other Members</div>
-        <div class="menu">
-            <a href="profile.php">Home</a>
-            <a href="members.php">Members</a>
-            <a href="friends.php">Friends</a>
-            <a href="messages.php">Messages</a>
-            <a href="edit_profile.php">Edit Profile</a>
-            <a href="logout.php">Log Out</a>
-        </div>
+        <?php include 'menu.html' ?>
         <div class="main">
        
             <ul>

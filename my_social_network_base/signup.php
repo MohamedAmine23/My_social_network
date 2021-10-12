@@ -3,29 +3,20 @@ require_once "functions.php";
 $pseudo='';
 $password='';
 $password_confirm='';
+$pdo=connect();
 if(isset($_POST["pseudo"])||isset($_POST['password'])||isset($_POST['password_confirm'])) {
     
     $pseudo=sanitize($_POST["pseudo"]);
     $password=sanitize($_POST["password"]);
     $password_confirm = sanitize($_POST["password_confirm"]);
 
-    try{
-        $query=$pdo->prepare("SELECT pseudo FROM members WHERE pseudo=:pseudo");
-        $query->execute(array("pseudo"=>$pseudo));
-        $row=$query->fetch();
-        if($query->rowCount()!=0)
-            $errors[]="le nom d'utilisateur existe déja";
+    if(!is_pseudo_available($pseudo))
+        $errors[]="le nom d'utilisateur existe déja";
      
-            //precedement:       
-        //tout se trouvait dans un seul try catch 
-        // la notion  "d'erreurs multiple"
-        // redirection et de connexion direct a la session 
-        //query execute pour le insert
+      
        
         
-    }catch(Exception $exc){
-        $error="ERREUR LORS DE L ACCES A LA BASE DE DONNEES";
-    }
+    
     if(trim($pseudo)=='')
         $errors[]="Le pseudo est obligatoire";
     if(strlen($pseudo)<3)
@@ -39,7 +30,7 @@ if(isset($_POST["pseudo"])||isset($_POST['password'])||isset($_POST['password_co
             $_SESSION["user"]=$pseudo;
             redirect("profile.php");
         }catch(Exception $exc){
-            die("Probleme lors de l'acces a la base de données");
+            abort("Probleme lors de l'acces a la base de données");
         }
     }
 
