@@ -26,7 +26,7 @@
             $error="le pseudo '$pseudo ' n'existe pas. Inscrivez vous!";
         }
     }catch(Exception $exc){
-        $error='ERREURS LORS DE L ACCES A LA BASE DE DONNEES';
+       abort('ERREURS LORS DE L ACCES A LA BASE DE DONNEES');
     }
     
     }
