@@ -20,7 +20,7 @@ function connect(){
 function is_pseudo_available($pseudo){
     $pdo=connect();
     try{
-        $query=$pdo->prepare("SELECT * FROM Members WHERE psuedo=:pseudo");
+        $query=$pdo->prepare("SELECT * FROM Members WHERE pseudo=:pseudo");
         $query->execute(array("pseudo"=>$pseudo));
         $result=$query->fetchAll();
         return count($result)===0;
@@ -64,4 +64,50 @@ function abort($err){
     $error=$err;
     include 'error.php';
     die;
+}
+
+function get_members(){
+    $pdo=connect();
+    try{
+       
+        $query=$pdo->prepare("SELECT pseudo FROM Members");
+        $query->execute();
+        return $query->fetchAll();
+        
+    }
+    catch(Exception $exc){
+        abort('Error while accessing the database. please contact your administrator.');
+    }
+}
+function get_member($pseudo){
+    $pdo=connect();
+    try{
+       
+        $query=$pdo->prepare("SELECT * FROM Members where pseudo = :pseudo");
+        $query->execute(array("pseudo"=>$pseudo));
+        return $query->fetch();
+        
+    }
+    catch(Exception $exc){
+        abort("Erreur lors de l'acces à la base de données.");
+    }
+}
+function update_member($pseudo){
+
+}
+function logout(){
+    $_SESSION=array();
+    session_destroy();
+    redirect('index.php');
+}
+function  add_member($pseudo,$password){
+    $pdo=connect();
+        try{
+            $query=$pdo->prepare("INSERT INTO Members(pseudo,password) VALUES(:pseudo,:password) ");
+            $query->execute(array("pseudo"=>$pseudo,"password"=>my_hash($password) ));
+            $_SESSION["user"]=$pseudo;
+            redirect("profile.php");
+        }catch(Exception $exc){
+            abort("Probleme lors de l'acces a la base de données");
+        }
 }

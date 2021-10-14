@@ -1,24 +1,15 @@
 <?php
     require_once "functions.php";
     check_login();
-    $pdo=connect();
+   
     if(isset($_GET["pseudo"])){
         $pseudo=sanitize($_GET["pseudo"]) ;
     }
     else{
         $pseudo=$user;
     }
-    try{
-       
-        $query=$pdo->prepare("SELECT * FROM Members where pseudo = :pseudo");
-        $query->execute(array("pseudo"=>$pseudo));
-        $profile=$query->fetch();
-        
-    }
-    catch(Exception $exc){
-        abort("Erreur lors de l'acces à la base de données.");
-    }
-    if($query->rowCount()==0){
+    $profile=get_member($pseudo);
+    if(count($profile)==0){
         abort("l'utilisateur n'existe pas ");
     }else{
         $description=$profile["profile"];

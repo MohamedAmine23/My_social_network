@@ -1,19 +1,10 @@
 <?php
     require_once "functions.php";
     
-    $pdo=connect();
+   
     check_login();
 
-    try{
-       
-        $query=$pdo->prepare("SELECT pseudo FROM Members");
-        $query->execute();
-        $members=$query->fetchAll();
-        var_dump($members);
-    }
-    catch(Exception $exc){
-        abort('Error while accessing the database. please contact your administrator.');
-    }
+    $members=get_members()
     
 ?>
 

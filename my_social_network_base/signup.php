@@ -3,7 +3,7 @@ require_once "functions.php";
 $pseudo='';
 $password='';
 $password_confirm='';
-$pdo=connect();
+
 if(isset($_POST["pseudo"])||isset($_POST['password'])||isset($_POST['password_confirm'])) {
     
     $pseudo=sanitize($_POST["pseudo"]);
@@ -24,14 +24,7 @@ if(isset($_POST["pseudo"])||isset($_POST['password'])||isset($_POST['password_co
     if($password!=$password_confirm)
         $errors[]="les deux de mots de passe entrés doivent être identiques";
     if(!isset($errors)){
-        try{
-            $query=$pdo->prepare("INSERT INTO Members(pseudo,password) VALUES(:pseudo,:password) ");
-            $query->execute(array("pseudo"=>$pseudo,"password"=>my_hash($password) ));
-            $_SESSION["user"]=$pseudo;
-            redirect("profile.php");
-        }catch(Exception $exc){
-            abort("Probleme lors de l'acces a la base de données");
-        }
+        add_member($pseudo,$password);
     }
 
 }
