@@ -5,7 +5,7 @@
     check_login();
     $members=get_members();
     //5:51 - 6:27
-    
+    //6:32 - 6:37 VERSION 2
     $filter="";
     if(isset($_GET["filter"])){
         $filter=$_GET["filter"];
@@ -15,8 +15,9 @@
                 $members=selection_filter($filter);
             }
             else if($_GET["action"]=="Clear"){
-                $filter='';
+                $filter='';$_GET["filter"]='';
                 $members=get_members();
+                //redirect("members.php");//version 2 : il suffit de "décommenter" la ligne 20 et de mettre en commentaire la ligne 18 et 19
             }    
         }
         
