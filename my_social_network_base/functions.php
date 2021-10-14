@@ -111,3 +111,15 @@ function  add_member($pseudo,$password){
             abort("Probleme lors de l'acces a la base de données");
         }
 }
+function selection_filter($filter){
+    $pdo=connect();
+    try{
+        $query=$pdo->prepare("SELECT * FROM Members WHERE pseudo LIKE :filter ");
+        $query->execute(array("filter"=>$filter."%"));
+        return $query->fetchAll();
+
+    }catch (Exception $exc){
+        die("erreur lors de l'acces a la base de données");
+    }
+
+}

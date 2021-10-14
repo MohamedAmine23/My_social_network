@@ -3,9 +3,24 @@
     
    
     check_login();
-
-    $members=get_members()
+    $members=get_members();
+    //5:51 - 6:27
     
+    $filter="";
+    if(isset($_GET["filter"])){
+        $filter=$_GET["filter"];
+        if(isset($_GET["action"])){
+
+            if($_GET["action"]=="Apply"){
+                $members=selection_filter($filter);
+            }
+            else if($_GET["action"]=="Clear"){
+                $filter='';
+                $members=get_members();
+            }    
+        }
+        
+    }
 ?>
 
 
@@ -23,7 +38,10 @@
         <div class="title">Other Members</div>
         <?php include 'menu.html' ?>
         <div class="main">
-       
+        <form action="members.php" method="GET">
+            <label>Filter:</label><input type="text" value="<?=$filter?>" name="filter">
+            <input type="submit" value="Apply" name="action">&nbsp;<input type="submit"  name="action" value="Clear">
+        </form>
             <ul>
                 <?php foreach($members as $member){?>
                         <li>
